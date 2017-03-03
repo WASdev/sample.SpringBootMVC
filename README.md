@@ -1,4 +1,4 @@
- # Integrating a Spring Boot MVC Project with Liberty Using Maven
+# Integrating a Spring Boot MVC Project with Liberty Using Maven
 
 This tutorial demonstrates the process of integrating a Spring Boot MVC project (which uses the [spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web) artifact, or one of its derived artifacts) with Liberty. For the purposes of this example, we'll be building off Spring Boot's "gs-serving-web-content" [sample project](https://github.com/spring-guides/gs-serving-web-content). Spring Boot also provides a [guide on their website](https://spring.io/guides/gs/serving-web-content/) which explains their project code in great detail.
 
@@ -74,6 +74,3 @@ public class Application extends SpringBootServletInitializer {
 We've now completed all the changes necessary to allow our application to run as a WAR on an external Liberty server. To build the WAR file, run `mvn clean package`.  You should see the WAR in your "target" directory after the build completes.
 
 We can now start up a Liberty server (I'm using Liberty version 16.0.0.4 with Java EE 7 Web Profile) and move the WAR file we just created to the "dropins" directory (or whatever appropriate directory based on your server configuration). 
-
-## <a name="jar"></a>Creating a Standalone Runnable JAR
-
