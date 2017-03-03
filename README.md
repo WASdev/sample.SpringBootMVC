@@ -1,21 +1,21 @@
-# Integrating a Spring Boot MVC Project with Liberty Using Maven
+ # Integrating a Spring Boot MVC Project with Liberty Using Maven
 
 This tutorial demonstrates the process of integrating a Spring Boot MVC project (which uses the [spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web) artifact, or one of its derived artifacts) with Liberty. For the purposes of this example, we'll be building off Spring Boot's "gs-serving-web-content" [sample project](https://github.com/spring-guides/gs-serving-web-content). Spring Boot also provides a [guide on their website](https://spring.io/guides/gs/serving-web-content/) which explains their project code in great detail.
 
-We'll show the integration of this project in two ways: first, by packaging the application as a WAR and deploying it manually to an external Liberty server; and second, by packaging a Liberty server with the application as a Liberty assembly, and producing a standalone runnable JAR.
+We'll show the integration of this project in two ways. First, we'll package the application as a WAR and deploy it manually to an external Liberty server. Building on this, we'll then eliminate the need for an external server by packaging a Liberty server with our application, and produce a standalone runnable JAR. 
 
 ### Table of Contents
 
 * [Getting Started](#start)
-* [Deploying to External Liberty Server](#deploy)
-* [Packaging as Liberty Assembly](#package)
+* [Packaging as a WAR](#war)
+* [Creating a Standalone Runnable JAR](#jar)
 * [Conclusion](#conclusion)
 
 ## <a name="start"></a>Getting Started
 
 Start by downloading/cloning the code from Spring's "gs-serving-web-content" [sample project](https://github.com/spring-guides/gs-serving-web-content/). All the proceeding modifications will be made on the code in the ["complete" folder](https://github.com/spring-guides/gs-serving-web-content/tree/master/complete) of that project. Thus, we suggest familiarizing yourself with that code and reading the guide before proceeding.
 
-## <a name="deploy"></a>Deploying to External Liberty Server
+## <a name="war"></a>Packaging as a WAR
 
 In this section, we'll show how to package your application as a WAR file, which you can then manually deploy to an external Liberty server (running wlp-webProfile7 or something similar) via the dropins folder. 
 
@@ -74,3 +74,6 @@ public class Application extends SpringBootServletInitializer {
 We've now completed all the changes necessary to allow our application to run as a WAR on an external Liberty server. To build the WAR file, run `mvn clean package`.  You should see the WAR in your "target" directory after the build completes.
 
 We can now start up a Liberty server (I'm using Liberty version 16.0.0.4 with Java EE 7 Web Profile) and move the WAR file we just created to the "dropins" directory (or whatever appropriate directory based on your server configuration). 
+
+## <a name="jar"></a>Creating a Standalone Runnable JAR
+
