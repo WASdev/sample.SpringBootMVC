@@ -115,7 +115,6 @@
 					<appsDirectory>apps</appsDirectory>
 					<stripVersion>true</stripVersion>
 					<looseApplication>true</looseApplication>
-					<skipTestServer>true</skipTestServer>
 				</configuration>
 			</plugin>
 		</plugins>

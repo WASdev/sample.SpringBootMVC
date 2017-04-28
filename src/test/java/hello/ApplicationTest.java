@@ -33,26 +33,24 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class ApplicationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    public void homePage() throws Exception {
-        // N.B. jsoup can be useful for asserting HTML content
-        mockMvc.perform(get("/index.html"))
-                .andExpect(content().string(containsString("Get your greeting")));
-    }
+	@Test
+	public void homePage() throws Exception {
+		// N.B. jsoup can be useful for asserting HTML content
+		mockMvc.perform(get("/index.html")).andExpect(content().string(containsString("Get your greeting")));
+	}
 
-    @Test
-    public void greeting() throws Exception {
-        mockMvc.perform(get("/greeting"))
-                .andExpect(content().string(containsString("Hello, World!")));
-    }
+	@Test
+	public void greeting() throws Exception {
+		mockMvc.perform(get("/greeting")).andExpect(content().string(containsString("Hello, World!")));
+	}
 
-    @Test
-    public void greetingWithUser() throws Exception {
-        mockMvc.perform(get("/greeting").param("name", "Greg"))
-                .andExpect(content().string(containsString("Hello, Greg!")));
-    }
+	@Test
+	public void greetingWithUser() throws Exception {
+		mockMvc.perform(get("/greeting").param("name", "Greg"))
+				.andExpect(content().string(containsString("Hello, Greg!")));
+	}
 
 }
