@@ -74,3 +74,6 @@ public class Application extends SpringBootServletInitializer {
 We've now completed all the changes necessary to allow our application to run as a WAR on an external Liberty server. To build the WAR file, run `mvn clean package`.  You should see the WAR in your "target" directory after the build completes.
 
 We can now start up a Liberty server (I'm using Liberty version 16.0.0.4 with Java EE 7 Web Profile) and move the WAR file we just created to the "dropins" directory (or whatever appropriate directory based on your server configuration). 
+
+## Creating a Standalone Runnable JAR
+

@@ -1,60 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework</groupId>
-    <artifactId>gs-serving-web-content</artifactId>
-    <version>0.1.0</version>
-    <packaging>war</packaging>
+	<groupId>org.springframework</groupId>
+	<artifactId>gs-serving-web-content</artifactId>
+	<version>0.1.0</version>
+	<packaging>liberty-assembly</packaging>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.1.RELEASE</version>
-    </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.1.RELEASE</version>
+	</parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <exclusions>
-			    <exclusion>
-			        <groupId>org.springframework.boot</groupId>
-			        <artifactId>spring-boot-starter-tomcat</artifactId>
-			    </exclusion>
+	<pluginRepositories>
+		<!-- Configure Sonatype OSS Maven snapshots repository -->
+		<pluginRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
 			</exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
-		    <scope>provided</scope>
 		</dependency>
-    </dependencies>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <start-class>hello.Application</start-class>
-    </properties>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.runtime</groupId>
+			<artifactId>wlp-webProfile7</artifactId>
+			<version>16.0.0.4</version>
+			<type>zip</type>
+		</dependency>
+
+		<dependency>
+			<groupId>net.wasdev.maven.tools.targets</groupId>
+			<artifactId>liberty-target</artifactId>
+			<version>16.0.0.4</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<start-class>hello.Application</start-class>
+		<!-- Liberty server properties -->
+		<wlpServerName>MVCServer</wlpServerName>
+		<testServerHttpPort>9080</testServerHttpPort>
+		<testServerHttpsPort>9443</testServerHttpsPort>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.wasdev.wlp.maven.plugins</groupId>
+				<artifactId>liberty-maven-plugin</artifactId>
+				<version>2.0-SNAPSHOT</version>
+				<extensions>true</extensions>
+				<!-- Specify configuration, executions for liberty-maven-plugin -->
+				<configuration>
+					<serverName>MVCServer</serverName>
+					<assemblyArtifact>
+						<groupId>com.ibm.websphere.appserver.runtime</groupId>
+						<artifactId>wlp-webProfile7</artifactId>
+						<version>16.0.0.4</version>
+						<type>zip</type>
+					</assemblyArtifact>
+					<assemblyInstallDirectory>${project.build.directory}</assemblyInstallDirectory>
+					<!-- <configFile>src/main/liberty/config/server.xml</configFile> -->
+					<packageFile>${project.build.directory}/MVCServerPackage.jar</packageFile>
+					<bootstrapProperties>
+						<default.http.port>9080</default.http.port>
+						<default.https.port>9443</default.https.port>
+					</bootstrapProperties>
+					<features>
+						<acceptLicense>true</acceptLicense>
+					</features>
+					<include>runnable</include>
+					<installAppPackages>all</installAppPackages>
+					<appsDirectory>apps</appsDirectory>
+					<stripVersion>true</stripVersion>
+					<looseApplication>true</looseApplication>
+					<skipTestServer>true</skipTestServer>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
