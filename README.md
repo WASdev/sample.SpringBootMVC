@@ -1,6 +1,6 @@
 # Integrating a Spring Boot MVC Project with Liberty Using Maven
 
-This tutorial demonstrates the process of integrating a Spring Boot MVC project (which uses the [spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web) artifact, or one of its derived artifacts) with Liberty. For the purposes of this example, we'll be building off Spring Boot's "gs-serving-web-content" [sample project](https://github.com/spring-guides/gs-serving-web-content). Spring Boot's website also provides a [guide](https://spring.io/guides/gs/serving-web-content/) which explains their project code in great detail. 
+This tutorial demonstrates the process of integrating a Spring Boot MVC project (which uses the [spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web) artifact or one of its derived artifacts) with Liberty. For the purposes of this example, we'll be building off Spring Boot's `gs-serving-web-content` [sample project](https://github.com/spring-guides/gs-serving-web-content). The Spring Boot website also provides a [guide](https://spring.io/guides/gs/serving-web-content/) which explains their project code in great detail. 
 
 ### Table of Contents
 
@@ -12,7 +12,7 @@ This tutorial demonstrates the process of integrating a Spring Boot MVC project 
 
 ## <a name="start"></a>Getting Started
 
-Start by downloading/cloning the code from Spring's "gs-serving-web-content" [sample project](https://github.com/spring-guides/gs-serving-web-content/). All the proceeding modifications will be made on the code in the ["complete" folder](https://github.com/spring-guides/gs-serving-web-content/tree/master/complete) of that project. Thus, we suggest familiarizing yourself with that code and reading the guide before proceeding.
+Start by downloading or cloning the code from Spring's `gs-serving-web-content` [sample project](https://github.com/spring-guides/gs-serving-web-content/). All the following modifications will be made on the code in the ["complete" folder](https://github.com/spring-guides/gs-serving-web-content/tree/master/complete) of that project. Thus, we suggest familiarizing yourself with that code and reading the guide before proceeding.
 
 Below, we'll make modifications to our project to deploy it on a Liberty server. Similar to Spring Boot, the application and its containing server are then packaged into a standalone runnable JAR.
 
@@ -64,11 +64,11 @@ Next, add the following properties:
 </properties>
 ```
 
-Note the inclusion of the `start-class` property, which references (including package name) your Spring Boot startup class. For our example, this class is `hello.Application`. This property indicates the main class to use for the runnable JAR.
+Note the inclusion of the `start-class` property, which references the fully qualified Spring Boot startup class. For our example, this class is `hello.Application`. This property indicates the main class to use for the runnable JAR.
 
 ### Add and Modify Dependencies
 
-The `spring-boot-starter-thymeleaf` artifact includes the `spring-boot-starter-web` dependency we talked about at the beginning of this tutorial. As specified in [Maven Central](http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web), `spring-boot-starter-web` uses Tomcat as the default embedded server. However, we don't need Tomcat anymore because we want to deploy our application to a Liberty server. Thus, we add the following exclusion to `spring-boot-starter-thymeleaf`:
+The `spring-boot-starter-thymeleaf` artifact includes the `spring-boot-starter-web` dependency we talked about at the beginning of this tutorial. As specified in [Maven Central](http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web), `spring-boot-starter-web` uses Tomcat as the default embedded server. However, we don't need Tomcat anymore because we want to deploy our application to a Liberty server. Thus, we add the following exclusion to the `spring-boot-starter-thymeleaf` dependency:
 ```
 <exclusions>
 	<exclusion>
@@ -137,15 +137,15 @@ Finally, add and configure the `liberty-maven-plugin` as shown below. We can als
 
 In this plugin, we specify a Liberty `wlp-webProfile7` server called "MVCServer" which our application will be deployed to. We also set `<include>runnable</include>`, to indicate that the application will be packaged into a runnable JAR, which we set to be called `MVCServerPackage.jar` in the `<packageFile>` parameter.
 
-The 2.0-SNAPSHOT version of the `liberty-maven-plugin` introduces support for a "loose application configuration", as indicated by the `looseApplication` tag. Application code is installed as a loose application WAR file if `installAppPackages` is set to `all` or `project` and `looseApplication` is set to `true`. 
+The 2.0-SNAPSHOT version of the `liberty-maven-plugin` introduces support for a "[loose application](https://www.ibm.com/support/knowledgecenter/en/SSEQTP_liberty/com.ibm.websphere.wlp.zseries.doc/ae/rwlp_loose_applications.html) configuration", as indicated by the `looseApplication` tag. Application code is installed as a loose application XML file if `installAppPackages` is set to `all` or `project` and `looseApplication` is set to `true`. 
 
-The loose application WAR file uses XML to loosely bundle application resources, so that they can be modified individually without needing to re-package the entire application. This is useful because it allows for incremental changes to be made to our application without taking it offline. 
+The loose application configuration uses XML to loosely bundle application resources, so that they can be modified individually without needing to repackage the entire application. This is useful because it allows for incremental changes to be made to our application, which saves time for tasks such as debugging.
 
 Further documentation of the plugin configuration is provided in the [ci.maven](https://github.com/WASdev/ci.maven/tree/tools-integration) repository.
 
 ## <a name="server"></a>Server Configuration
 
-We'll next provide the configuration for our Liberty server. Create a file called `server.xml` and place it in the directory specified in the `configFile` configuration parameter in the `liberty-maven-plugin`. If no directory is specified, the default directory is `src/test/resources`. 
+Next, we'll provide the configuration for our Liberty server. Create a file called `server.xml` and place it in the directory specified in the `configFile` configuration parameter in the `liberty-maven-plugin`. If no directory is specified, the default directory is `src/test/resources`. 
 
 Add the following code to `server.xml`:
 
@@ -179,7 +179,7 @@ In the server configuration, we map our application context root to the server r
 
 ## <a name="app"></a>Changing the Application Startup Process
 
-We'll now need to change the startup process for our application. Traditionally, a Spring Boot application running on an embedded server such as Tomcat simply calls `SpringApplication.run(...)` in its main class (in this case `hello.Application`). However, we'll want to have our class extend `SpringBootServletInitializer` instead when being deployed to a Liberty server, as shown below:
+We'll now need to change the startup process for our application. Traditionally, a Spring Boot application running on an embedded server such as Tomcat simply calls `SpringApplication.run(...)` in its main class (in this case `hello.Application`). However, our class needs to extend `SpringBootServletInitializer` instead when being deployed to a Liberty server, as shown below:
 
 ```
 package hello;
@@ -202,6 +202,6 @@ Also recall that we set the `<start-class>` parameter in the POM properties abov
 
 ## <a name="conclusion"></a>Wrapping Up
 
-Congratulations! You should now be able to run your WebSocket application on Liberty by executing `mvn install liberty:run-server`. By navigating to `http://localhost:9080/`, you should see the application appear and behave in the same way as it does standalone. Additionally, you'll see that a JAR named `MVCServerPackage.jar` was created in the target directory, which bundles your application with the Liberty server you configured into a standalone runnable JAR.
+Congratulations! You should now be able to run your Spring MVC application on Liberty by executing `mvn install liberty:run-server`. By navigating to `http://localhost:9080/`, you should see the application appear and behave in the same way as it does standalone. Additionally, you'll see that a JAR named `MVCServerPackage.jar` was created in the target directory, which bundles your application with the Liberty server you configured into a standalone runnable JAR.
 
 Please feel free to download our sample code from this repository, or create a Github Issue if you have any additional questions.
