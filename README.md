@@ -41,7 +41,7 @@ The 2.0-SNAPSHOT of the `liberty-maven-plugin` provides most of the configuratio
 
 ### Change the Packaging Type
 
-After doing this, we can set our packaging type to `liberty-assembly. By default, no packaging type is specified in the sample project, so you'll need to add 
+After doing this, we can set our packaging type to `liberty-assembly`. By default, no packaging type is specified in the sample project, so you'll need to add 
 
 ```
 <packaging>liberty-assembly</packaging>
@@ -57,7 +57,7 @@ Next, add the following properties:
    ...
     <start-class>hello.Application</start-class>
     <!-- Liberty server properties -->
-    <wlpServerName>WebsocketServer</wlpServerName>
+    <wlpServerName>MVCServer</wlpServerName>
     <testServerHttpPort>9080</testServerHttpPort>
     <testServerHttpsPort>9443</testServerHttpsPort>
     ...
@@ -78,15 +78,9 @@ The `spring-boot-starter-thymeleaf` artifact includes the `spring-boot-starter-w
 </exclusions>
 ```
 
-Also, add the servlet dependency in order to package your application as a WAR, as well as two dependencies for our Liberty server:
+We'll also need to add two dependencies for our Liberty server:
 
 ```
-<dependency>
-	<groupId>javax.servlet</groupId>
-	<artifactId>javax.servlet-api</artifactId>
-    <scope>provided</scope>
-</dependency>
-
 <dependency>
 	<groupId>com.ibm.websphere.appserver.runtime</groupId>
 	<artifactId>wlp-webProfile7</artifactId>
@@ -105,7 +99,7 @@ Also, add the servlet dependency in order to package your application as a WAR, 
 
 ### Add the `liberty-maven-plugin`
 
-Finally, add and configure the `liberty-maven-plugin` as follows. We can also remove the `spring-boot-maven-plugin`. 
+Finally, add and configure the `liberty-maven-plugin` as shown below. We can also remove the `spring-boot-maven-plugin` that was included in the POM of the sample project. 
 
 ```
 <plugin>
@@ -141,17 +135,17 @@ Finally, add and configure the `liberty-maven-plugin` as follows. We can also re
 </plugin>
 ```
 
-In this plugin, we specify a Liberty wlp-webProfile7 server called "MVCServer" which our application will be deployed to. The server and application will be packaged into a runnable jar called `MVCServerPackage.jar`. We also set `<include>runnable</include>`, to indicate that the application will be packaged into a runnable JAR. 
+In this plugin, we specify a Liberty `wlp-webProfile7` server called "MVCServer" which our application will be deployed to. We also set `<include>runnable</include>`, to indicate that the application will be packaged into a runnable JAR, which we set to be called `MVCServerPackage.jar` in the `<packageFile>` parameter.
 
 The 2.0-SNAPSHOT version of the `liberty-maven-plugin` introduces support for a "loose application configuration", as indicated by the `looseApplication` tag. Application code is installed as a loose application WAR file if `installAppPackages` is set to `all` or `project` and `looseApplication` is set to `true`. 
 
-The loose application WAR file uses XML to loosely bundle all the application resources, so that they can be modified individually without needing to re-package the entire application. This is useful because it allows for incremental changes to be made to your application without taking it offline. 
+The loose application WAR file uses XML to loosely bundle application resources, so that they can be modified individually without needing to re-package the entire application. This is useful because it allows for incremental changes to be made to our application without taking it offline. 
 
 Further documentation of the plugin configuration is provided in the [ci.maven](https://github.com/WASdev/ci.maven/tree/tools-integration) repository.
 
 ## <a name="server"></a>Server Configuration
 
-We'll nexxt provide the configuration for our Liberty server. Create a file called `server.xml` and place it in the directory specified in the `configFile` configuration parameter for the `liberty-maven-plugin`. If no directory is specified, the default directory is `src/test/resources`. 
+We'll next provide the configuration for our Liberty server. Create a file called `server.xml` and place it in the directory specified in the `configFile` configuration parameter in the `liberty-maven-plugin`. If no directory is specified, the default directory is `src/test/resources`. 
 
 Add the following code to `server.xml`:
 
@@ -181,11 +175,11 @@ Add the following code to `server.xml`:
 </server>
 ```
 
-In the server configuration, we map our application context root to the server root directory, as we wish to reflect the custom for Spring Boot applications running in embedded containers. We also add the Liberty `servlet-3.1` feature, among other things which are described in the comments. 
+In the server configuration, we map our application context root to the server root directory. We also add the Liberty `servlet-3.1` feature needed for running our application, as well as other things which are described in the XML comments. 
 
 ## <a name="app"></a>Changing the Application Startup Process
 
-Traditionally, a Spring Boot application running on an embedded server such as Tomcat simply calls `SpringApplication.run(...)` in its main class (in this case `hello.Application`). However, we'll want to have our class extend `SpringBootServletInitializer` instead when being deployed to a Liberty server, as shown below:
+We'll now need to change the startup process for our application. Traditionally, a Spring Boot application running on an embedded server such as Tomcat simply calls `SpringApplication.run(...)` in its main class (in this case `hello.Application`). However, we'll want to have our class extend `SpringBootServletInitializer` instead when being deployed to a Liberty server, as shown below:
 
 ```
 package hello;
