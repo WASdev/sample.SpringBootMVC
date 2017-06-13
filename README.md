@@ -1,4 +1,4 @@
-# Integrating a Spring Boot MVC Project with Liberty Using Maven
+# Integrating a Spring Boot MVC Project with Liberty Using Maven [![Build Status](https://travis-ci.org/WASdev/sample.SpringBootMVC.svg?branch=master)](https://travis-ci.org/WASdev/sample.SpringBootMVC)
 
 This tutorial demonstrates the process of integrating a Spring Boot MVC project (which uses the [spring-boot-starter-web](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web) artifact or one of its derived artifacts) with Liberty. For the purposes of this example, we'll be building off Spring Boot's `gs-serving-web-content` [sample project](https://github.com/spring-guides/gs-serving-web-content). The Spring Boot website also provides a [guide](https://spring.io/guides/gs/serving-web-content/) which explains their project code in great detail. 
 
@@ -18,30 +18,9 @@ Below, we'll make modifications to our project to deploy it on a Liberty server.
 
 ## <a name="pom"></a>Modifying the POM
 
-### Add Sonatype Repository
-
-The 2.0-SNAPSHOT of the `liberty-maven-plugin` provides most of the configuration required to run our application on Liberty. To get the plugin, we'll need to add the Sonatype repository to our project:
-
-```
-<pluginRepositories>
-	<!-- Configure Sonatype OSS Maven snapshots repository -->
-	<pluginRepository>
-		<id>sonatype-nexus-snapshots</id>
-		<name>Sonatype Nexus Snapshots</name>
-		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		<snapshots>
-			<enabled>true</enabled>
-		</snapshots>
-		<releases>
-			<enabled>false</enabled>
-		</releases>
-	</pluginRepository>
-</pluginRepositories>
-```
-
 ### Change the Packaging Type
 
-After doing this, we can set our packaging type to `liberty-assembly`. By default, no packaging type is specified in the sample project, so you'll need to add 
+To get started, we set our packaging type to `liberty-assembly`. By default, no packaging type is specified in the sample project, so you'll need to add 
 
 ```
 <packaging>liberty-assembly</packaging>
@@ -105,7 +84,7 @@ Finally, add and configure the `liberty-maven-plugin` as shown below. We can als
 <plugin>
 	<groupId>net.wasdev.wlp.maven.plugins</groupId>
 	<artifactId>liberty-maven-plugin</artifactId>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.0</version>
 	<extensions>true</extensions>
 	<!-- Specify configuration, executions for liberty-maven-plugin -->
 	<configuration>
@@ -137,7 +116,7 @@ Finally, add and configure the `liberty-maven-plugin` as shown below. We can als
 
 In this plugin, we specify a Liberty `wlp-webProfile7` server called "MVCServer" which our application will be deployed to. We also set `<include>runnable</include>`, to indicate that the application will be packaged into a runnable JAR, which we set to be called `MVCServerPackage.jar` in the `<packageFile>` parameter.
 
-The 2.0-SNAPSHOT version of the `liberty-maven-plugin` introduces support for a "[loose application](https://www.ibm.com/support/knowledgecenter/en/SSEQTP_liberty/com.ibm.websphere.wlp.zseries.doc/ae/rwlp_loose_applications.html) configuration", as indicated by the `looseApplication` tag. Application code is installed as a loose application XML file if `installAppPackages` is set to `all` or `project` and `looseApplication` is set to `true`. 
+The 2.0 version of the `liberty-maven-plugin` introduces support for a "[loose application](https://www.ibm.com/support/knowledgecenter/en/SSEQTP_liberty/com.ibm.websphere.wlp.zseries.doc/ae/rwlp_loose_applications.html) configuration", as indicated by the `looseApplication` tag. Application code is installed as a loose application XML file if `installAppPackages` is set to `all` or `project` and `looseApplication` is set to `true`. 
 
 The loose application configuration uses XML to loosely bundle application resources, so that they can be modified individually without needing to repackage the entire application. This is useful because it allows for incremental changes to be made to our application, which saves time for tasks such as debugging.
 

@@ -1,0 +1,6 @@
+language: java
+matrix:
+  include:
+    - jdk: oraclejdk8
+script:
+  - mvn install
