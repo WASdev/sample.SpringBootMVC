@@ -5,4 +5,4 @@ matrix:
 before_install:
   - chmod +x mvnw
 script:
-  - mvn install
+  - ./mvnw install
