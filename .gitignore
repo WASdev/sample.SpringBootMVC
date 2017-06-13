@@ -71,3 +71,4 @@ hs_err_pid*
 # Liberty
 build
 target
+!maven-wrapper.jar

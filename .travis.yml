@@ -3,4 +3,5 @@ matrix:
   include:
     - jdk: oraclejdk8
 script:
+  - mvn -N io.takari:maven:wrapper
   - mvn install
