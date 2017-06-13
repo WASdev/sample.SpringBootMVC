@@ -3,4 +3,4 @@ matrix:
   include:
     - jdk: oraclejdk8
 script:
-  - ./mvnw install
+  - mvn install
